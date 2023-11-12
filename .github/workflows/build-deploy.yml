@@ -52,4 +52,4 @@ jobs:
 
       - name: Apply deploy-service-and-loadbalancer.yaml
         run: |
-          kubectl -n development rollout restart deployment -f ./k8s/deployment.yaml
+          kubectl -n development rollout restart -f ./k8s/deployment.yaml
