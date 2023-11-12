@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ape-location-deployment
+  labels:
+    app: ape-location-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ape-location
+  template:
+    metadata:
+      labels:
+        app: ape-location
+    spec:
+      containers:
+        - image: jansuklje/ape-location-service:latest
+          name: ape-location
+          env:
+            - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret-url
+                  key: url
+            - name: KUMULUZEE_DATASOURCES0_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret-username
+                  key: username
+            - name: KUMULUZEE_DATASOURCES0_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret-password
+                  key: password
+          ports:
+            - containerPort: 8080
