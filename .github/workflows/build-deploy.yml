@@ -36,7 +36,7 @@ jobs:
         with:
           file: ./Dockerfile_with_maven_build
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sfl_rso:${{ steps.current-time.outputs.formattedTime }}, ${{ secrets.DOCKERHUB_USERNAME }}/sfl_rso:latest
+          tags: jansuklje/ape-location-service:${{ steps.current-time.outputs.formattedTime }}, jansuklje/ape-location-service:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
