@@ -1,5 +1,5 @@
 kumuluzee:
-  name: image-catalog-service
+  name: ape-location-service
   env:
     name: dev
   version: 1.0.0
@@ -8,4 +8,4 @@ kumuluzee:
     http:
       port: 8080
   datasources:
-    - jndi-name: jdbc/ImageMetadataDS
+    - jndi-name: jdbc/APELocationDS
