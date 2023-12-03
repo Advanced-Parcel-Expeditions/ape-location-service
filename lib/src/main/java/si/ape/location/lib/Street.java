@@ -1,45 +1,78 @@
 package si.ape.location.lib;
 
+/**
+ * The Street DTO class. This class serves as a counterpart to the StreetEntity class, and should be used to transfer
+ * data between the service and the client.
+ */
 public class Street {
 
-    private String street_name;
+    /**
+     * The street name.
+     */
+    private String streetName;
 
-    private Integer street_number;
+    /**
+     * The street number.
+     */
+    private Integer streetNumber;
 
+    /**
+     * The city.
+     */
     private City city;
 
-    //private Country country;
-
-    public String getStreet_name() {
-        return street_name;
+    /**
+     * Gets the street name.
+     *
+     * @return the street name
+     */
+    public String getStreetName() {
+        return streetName;
     }
 
-    public void setStreet_name(String street_name) {
-        this.street_name = street_name;
+    /**
+     * Sets the street name.
+     *
+     * @param streetName the street name
+     */
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
-    public Integer getStreet_number() {
-        return street_number;
+    /**
+     * Gets the street number.
+     *
+     * @return the street number
+     */
+    public Integer getStreetNumber() {
+        return streetNumber;
     }
 
-    public void setStreet_number(Integer street_number) {
-        this.street_number = street_number;
+    /**
+     * Sets the street number.
+     *
+     * @param streetNumber the street number
+     */
+    public void setStreetNumber(Integer streetNumber) {
+        this.streetNumber = streetNumber;
     }
 
+    /**
+     * Gets the city.
+     *
+     * @return the city
+     */
     public City getCity() {
         return city;
     }
 
+    /**
+     * Sets the city.
+     *
+     * @param city the city
+     */
     public void setCity(City city) {
         this.city = city;
     }
-
-    /*public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }*/
 
 }
