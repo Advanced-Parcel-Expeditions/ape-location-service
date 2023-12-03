@@ -47,13 +47,13 @@ public class CityEntity {
      * The latitude of the city.
      */
     @Column(name = "latitude")
-    private Double latitude;
+    private String latitude;
 
     /**
      * The longitude of the city.
      */
     @Column(name = "longitude")
-    private Double longitude;
+    private String longitude;
 
     /**
      * The CityId class is a class that represents the composite primary key of the city table.
@@ -230,7 +230,7 @@ public class CityEntity {
      *
      * @return The latitude of the city.
      */
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
@@ -239,7 +239,7 @@ public class CityEntity {
      *
      * @param latitude The latitude of the city.
      */
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
@@ -248,7 +248,7 @@ public class CityEntity {
      *
      * @return The longitude of the city.
      */
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
@@ -257,7 +257,7 @@ public class CityEntity {
      *
      * @param longitude The longitude of the city.
      */
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 

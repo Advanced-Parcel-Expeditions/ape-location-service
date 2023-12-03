@@ -116,7 +116,7 @@ public class LocationResource {
         }
 
         street = locationBean.createStreet(street);
-        return Response.status(Response.Status.CONFLICT).entity(street).build();
+        return Response.status(Response.Status.OK).entity(street).build();
     }
 
     @Operation(description = "Add city.", summary = "Add city")
@@ -138,7 +138,7 @@ public class LocationResource {
         }
 
         city = locationBean.createCity(city);
-        return Response.status(Response.Status.CONFLICT).entity(city).build();
+        return Response.status(Response.Status.OK).entity(city).build();
     }
 
     @Operation(description = "Add country.", summary = "Add country")
@@ -160,7 +160,7 @@ public class LocationResource {
         }
 
         country = locationBean.createCountry(country);
-        return Response.status(Response.Status.CONFLICT).entity(country).build();
+        return Response.status(Response.Status.OK).entity(country).build();
     }
 
     @Operation(description = "Update street.", summary = "Update street")
