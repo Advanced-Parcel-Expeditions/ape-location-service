@@ -4,7 +4,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -49,11 +54,21 @@ public class LocationBean {
 
     public List<Country> getCountryFilter(String name) {
 
-        QueryParameters queryParameters = QueryParameters.query("name=" + name ).defaultOffset(0)
-                .build();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<CountryEntity> criteriaQuery = criteriaBuilder.createQuery(CountryEntity.class);
+        Root<CountryEntity> root = criteriaQuery.from(CountryEntity.class);
 
-        return JPAUtils.queryEntities(em, CountryEntity.class, queryParameters).stream()
-                .map(CountryConverter::toDto).collect(Collectors.toList());
+        List<Predicate> predicates = new ArrayList<Predicate>();
+
+        if (name != null && !name.isEmpty()) {
+            predicates.add(criteriaBuilder.equal(root.get("name"), "%" + name + "%"));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        List<CountryEntity> resultList = em.createQuery(criteriaQuery).getResultList();
+
+        return resultList.stream().map(CountryConverter::toDto).collect(Collectors.toList());
 
     }
 

@@ -11,8 +11,8 @@ import org.eclipse.microprofile.openapi.annotations.info.License;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 
 @OpenAPIDefinition(info = @Info(title = "Location API", version = "v1",
-        contact = @Contact(email = "rso@fri.uni-lj.si"),
-        license = @License(name = "dev"), description = "API for managing locations."),
+        contact = @Contact(email = "ls6727@student.uni-lj.si, js1471@student.uni-lj.si"),
+        license = @License(name = "dev"), description = "API for managing the locations supported by APE."),
         servers = @Server(url = "http://localhost:8080/"))
 @ApplicationPath("/v1")
 public class LocationApplication extends Application {
