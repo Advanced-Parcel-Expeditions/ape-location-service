@@ -1,11 +1,13 @@
 package si.ape.location.models.entities;
 
-import si.ape.location.lib.City;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
 
+/**
+ * The StreetEntity class is a JPA entity class that represents the street table in the database. The street table
+ * contains the basic information about the street, namely the street name, the street number, the city code, the city
+ * name and the country code.
+ */
 @Entity
 @Table(name = "street")
 @NamedQueries(value =
@@ -16,12 +18,24 @@ import java.time.Instant;
 @IdClass(StreetEntity.StreetId.class)
 public class StreetEntity {
 
+    /**
+     * The street name.
+     */
     @Id
-    private String street_name;
+    @Column(name = "street_name")
+    private String streetName;
 
+    /**
+     * The street number.
+     */
     @Id
-    private Integer street_number;
+    @Column(name = "street_number")
+    private Integer streetNumber;
 
+    /**
+     * The CityEntity, referencing the `code`, `name` and `country_code` columns of the `city` table as a
+     * primary foreign key.
+     */
     @Id
     @ManyToOne
     @JoinColumns({
@@ -31,123 +45,167 @@ public class StreetEntity {
     })
     private CityEntity city;
 
-    /*@Id
-    @ManyToOne
-    @JoinColumn(name = "country_code", referencedColumnName = "country_code")
-    private CountryEntity country;*/
-
+    /**
+     * The StreetId class is a class that represents the composite primary key of the street table.
+     */
     public static class StreetId implements Serializable {
-        private String street_name;
-        private Integer street_number;
 
+        /**
+         * The street name.
+         */
+        private String streetName;
+
+        /**
+         * The street number.
+         */
+        private Integer streetNumber;
+
+        /**
+         * The CityId class, representing the composite primary key of the city table.
+         */
         private CityEntity.CityId city;
-        /*private String code;
-        private String name;
-        private String country;*/
 
-        public StreetId(String street_name, Integer street_number, String city_code, String city_name, String country_code) {
-            this.street_name = street_name;
-            this.street_number = street_number;
-            /*this.code = city_code;
-            this.name = city_name;
-            this.country = country_code;*/
-            this.city = new CityEntity.CityId(city_code, city_name, country_code);
+        /**
+         * Instantiates a new Street composite primary key.
+         *
+         * @param streetName   The street name.
+         * @param streetNumber The street number.
+         * @param cityCode     The city code.
+         * @param cityName     The city name.
+         * @param countryCode  The country code.
+         */
+        public StreetId(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode) {
+            this.streetName = streetName;
+            this.streetNumber = streetNumber;
+            this.city = new CityEntity.CityId(cityCode, cityName, countryCode);
         }
 
-        public String getStreet_name() {
-            return street_name;
+        /**
+         * Gets the street name.
+         *
+         * @return the street name.
+         */
+        public String getStreetName() {
+            return streetName;
         }
 
-        public void setStreet_name(String street_name) {
-            this.street_name = street_name;
+        /**
+         * Sets the street name.
+         *
+         * @param streetName the street name.
+         */
+        public void setStreetName(String streetName) {
+            this.streetName = streetName;
         }
 
-        public Integer getStreet_number() {
-            return street_number;
+        /**
+         * Gets the street number.
+         *
+         * @return the street number.
+         */
+        public Integer getStreetNumber() {
+            return streetNumber;
         }
 
-        public void setStreet_number(Integer street_number) {
-            this.street_number = street_number;
+        /**
+         * Sets the street number.
+         *
+         * @param streetNumber the street number.
+         */
+        public void setStreetNumber(Integer streetNumber) {
+            this.streetNumber = streetNumber;
         }
 
-        public String getCity_code() {
-            //return code;
-            return city.getCode();
+        /**
+         * Gets the city primary composite key.
+         *
+         * @return the city composite key.
+         */
+        public CityEntity.CityId getCity() {
+            return city;
         }
 
-        public void setCity_code(String city_code) {
-            //this.code = city_code;
-            this.city.setCode(city_code);
+        /**
+         * Sets the city primary composite key.
+         *
+         * @param city the city composite key.
+         */
+        public void setCity(CityEntity.CityId city) {
+            this.city = city;
         }
 
-        public String getCity_name() {
-            //return name;
-            return city.getName();
+        /**
+         * Gets the country code.
+         *
+         * @return the country code.
+         */
+        public String getCountryCode() {
+            return city.getCountry();
         }
 
-        public void setCity_name(String city_name) {
-            //this.name = city_name;
-            this.city.setName(city_name);
+        /**
+         * Sets the country code.
+         *
+         * @param countryCode the country code.
+         */
+        public void setCountryCode(String countryCode) {
+            this.city.setCountry(countryCode);
         }
 
-        public String getCountry_code() {
-            //return country;
-            return city.getCountry_code();
-        }
-
-        public void setCountry_code(String country_code) {
-            //this.country = country_code;
-            this.city.setCountry_code(country_code);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof StreetId)) return false;
-            StreetId that = (StreetId) o;
-            return getStreet_name().equals(that.getStreet_name()) &&
-                    getStreet_number().equals(that.getStreet_number()) &&
-                    getCity_code().equals(that.getCity_code()) &&
-                    getCity_name().equals(that.getCity_name())
-                    && getCountry_code().equals(that.getCountry_code());
-        }
-
-        @Override
-        public int hashCode() {
-            return street_name.hashCode();
-        }
     }
 
-    public String getStreet_name() {
-        return street_name;
+    /**
+     * Gets the street name.
+     *
+     * @return the street name.
+     */
+    public String getStreetName() {
+        return streetName;
     }
 
-    public void setStreet_name(String street_name) {
-        this.street_name = street_name;
+    /**
+     * Sets the street name.
+     *
+     * @param streetName the street name.
+     */
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
-    public Integer getStreet_number() {
-        return street_number;
+    /**
+     * Gets the street number.
+     *
+     * @return the street number.
+     */
+    public Integer getStreetNumber() {
+        return streetNumber;
     }
 
-    public void setStreet_number(Integer street_number) {
-        this.street_number = street_number;
+    /**
+     * Sets the street number.
+     *
+     * @param streetNumber the street number.
+     */
+    public void setStreetNumber(Integer streetNumber) {
+        this.streetNumber = streetNumber;
     }
 
+    /**
+     * Gets the CityEntity.
+     *
+     * @return the CityEntity.
+     */
     public CityEntity getCity() {
         return city;
     }
 
+    /**
+     * Sets the CityEntity.
+     *
+     * @param city the CityEntity.
+     */
     public void setCity(CityEntity city) {
         this.city = city;
     }
-
-    /*public CountryEntity getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryEntity country) {
-        this.country = country;
-    }*/
 
 }

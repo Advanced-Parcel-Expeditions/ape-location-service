@@ -295,7 +295,7 @@ public class LocationBean {
             rollbackTx();
         }
 
-        if (streetEntity.getStreet_name() == null) {
+        if (streetEntity.getStreetName() == null) {
             throw new RuntimeException("Entity was not persisted");
         }
 
@@ -314,10 +314,9 @@ public class LocationBean {
 
         try {
             beginTx();
-            updatedStreetEntity.setStreet_name(c.getStreet_name());
-            updatedStreetEntity.setStreet_number(c.getStreet_number());
+            updatedStreetEntity.setStreetName(c.getStreetName());
+            updatedStreetEntity.setStreetNumber(c.getStreetNumber());
             updatedStreetEntity.setCity(c.getCity());
-            //updatedStreetEntity.setCountry(c.getCountry());
             updatedStreetEntity = em.merge(updatedStreetEntity);
             commitTx();
         } catch (Exception e) {
