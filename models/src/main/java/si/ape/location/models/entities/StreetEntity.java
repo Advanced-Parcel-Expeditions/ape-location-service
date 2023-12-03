@@ -13,7 +13,14 @@ import java.io.Serializable;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "StreetEntity.getAll",
-                        query = "SELECT s FROM StreetEntity s")
+                        query = "SELECT s FROM StreetEntity s"),
+                @NamedQuery(name = "StreetEntity.getAllByParameters",
+                        query = "SELECT s FROM StreetEntity s WHERE " +
+                                "(:streetName IS NULL OR s.streetName = :streetName) AND " +
+                                "(:streetNumber IS NULL OR s.streetNumber = :streetNumber) AND " +
+                                "(:cityCode IS NULL OR s.city.code = :cityCode) AND " +
+                                "(:cityName IS NULL OR s.city.name = :cityName) AND " +
+                                "(:countryCode IS NULL OR s.city.country.code = :countryCode)"),
         })
 @IdClass(StreetEntity.StreetId.class)
 public class StreetEntity {
@@ -39,9 +46,9 @@ public class StreetEntity {
     @Id
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "code", referencedColumnName = "code"),
-            @JoinColumn(name = "name", referencedColumnName = "name"),
-            @JoinColumn(name = "country", referencedColumnName = "country_code")
+            @JoinColumn(name = "city_code", referencedColumnName = "code"),
+            @JoinColumn(name = "city_name", referencedColumnName = "name"),
+            @JoinColumn(name = "country_code", referencedColumnName = "country_code")
     })
     private CityEntity city;
 

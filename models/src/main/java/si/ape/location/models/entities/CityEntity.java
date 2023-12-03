@@ -13,7 +13,12 @@ import java.io.Serializable;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "CityEntity.getAll",
-                        query = "SELECT c FROM CityEntity c")
+                        query = "SELECT c FROM CityEntity c"),
+                @NamedQuery(name = "CityEntity.getAllByParameters",
+                        query = "SELECT c FROM CityEntity c WHERE " +
+                                "(:code IS NULL OR c.code = :code) AND " +
+                                "(:name IS NULL OR c.name = :name) AND " +
+                                "(:country IS NULL OR c.country.code = :country)"),
         })
 @IdClass(CityEntity.CityId.class)
 public class CityEntity {
