@@ -39,11 +39,8 @@ public class LocationBean {
 
     public List<Country> getCountry() {
 
-        log.log(java.util.logging.Level.INFO, "getCountry() called");
-
         TypedQuery<CountryEntity> query = em.createNamedQuery(
                 "CountryEntity.getAll", CountryEntity.class);
-
 
 
         List<CountryEntity> resultList = query.getResultList();
@@ -52,6 +49,20 @@ public class LocationBean {
 
     }
 
+    public List<Country> getCountryByParameters(String code, String name) {
+
+        TypedQuery<CountryEntity> query = em.createNamedQuery(
+                "CountryEntity.getAllByParameters", CountryEntity.class);
+
+        query.setParameter("code", code);
+        query.setParameter("name", name);
+
+        List<CountryEntity> resultList = query.getResultList();
+
+        return resultList.stream().map(CountryConverter::toDto).collect(Collectors.toList());
+
+    }
+    
     public List<Country> getCountryFilter(String name) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -61,7 +72,7 @@ public class LocationBean {
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         if (name != null && !name.isEmpty()) {
-            predicates.add(criteriaBuilder.equal(root.get("name"), "%" + name + "%"));
+            predicates.add(criteriaBuilder.equal(root.get("name"), name));
         }
 
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
@@ -167,9 +178,23 @@ public class LocationBean {
 
     }
 
-    public List<City> getCityFilter(String name, String country_code) {
+    public List<City> getCityByParameters(String code, String name, String countryCode) {
 
-        QueryParameters queryParameters = QueryParameters.query("name=" + name + "&country_code=" + country_code ).defaultOffset(0)
+        TypedQuery<CityEntity> query = em.createNamedQuery(
+                "CityEntity.getAllByParameters", CityEntity.class);
+
+        query.setParameter("code", code);
+        query.setParameter("name", name);
+        query.setParameter("country", countryCode);
+
+        List<CityEntity> resultList = query.getResultList();
+
+        return resultList.stream().map(CityConverter::toDto).collect(Collectors.toList());
+    }
+    
+    public List<City> getCityFilter(String name, String countryCode) {
+
+        QueryParameters queryParameters = QueryParameters.query("name=" + name + "&countryCode=" + countryCode ).defaultOffset(0)
                 .build();
 
         return JPAUtils.queryEntities(em, CityEntity.class, queryParameters).stream()
@@ -177,9 +202,9 @@ public class LocationBean {
 
     }
 
-    public City getCity(String code, String name, String country_code) {
+    public City getCity(String code, String name, String countryCode) {
 
-        CityEntity cityEntity = em.find(CityEntity.class, new CityEntity.CityId(code, name, country_code));
+        CityEntity cityEntity = em.find(CityEntity.class, new CityEntity.CityId(code, name, countryCode));
 
         if (cityEntity == null) {
             throw new NotFoundException();
@@ -210,9 +235,9 @@ public class LocationBean {
         return CityConverter.toDto(cityEntity);
     }
 
-    public City putCity(String code, String name, String country_code, City city) {
+    public City putCity(String code, String name, String countryCode, City city) {
 
-        CityEntity c = em.find(CityEntity.class, new CityEntity.CityId(code, name, country_code));
+        CityEntity c = em.find(CityEntity.class, new CityEntity.CityId(code, name, countryCode));
 
         if (c == null) {
             return null;
@@ -234,9 +259,9 @@ public class LocationBean {
         return CityConverter.toDto(updatedCityEntity);
     }
 
-    public boolean deleteCity(String code, String name, String country_code) {
+    public boolean deleteCity(String code, String name, String countryCode) {
 
-        CityEntity city = em.find(CityEntity.class, new CityEntity.CityId(code, name, country_code));
+        CityEntity city = em.find(CityEntity.class, new CityEntity.CityId(code, name, countryCode));
 
         if (city != null) {
             try {
@@ -253,16 +278,42 @@ public class LocationBean {
         return true;
     }
 
-    public List<Street> getStreet() {
+    public List<Street> getStreet(int page, int size) {
 
         TypedQuery<StreetEntity> query = em.createNamedQuery(
                 "StreetEntity.getAll", StreetEntity.class);
 
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
+
         List<StreetEntity> resultList = query.getResultList();
 
         return resultList.stream().map(StreetConverter::toDto).collect(Collectors.toList());
+        
 
     }
+    
+    public List<Street> getStreetByParameters(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode, int page, int size) {
+
+        TypedQuery<StreetEntity> query = em.createNamedQuery(
+                "StreetEntity.getAllByParameters", StreetEntity.class);
+        
+        query.setParameter("streetName", streetName);
+        query.setParameter("streetNumber", streetNumber);
+        query.setParameter("cityCode", cityCode);
+        query.setParameter("cityName", cityName);
+        query.setParameter("countryCode", countryCode);
+
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
+
+        List<StreetEntity> resultList = query.getResultList();
+
+        return resultList.stream().map(StreetConverter::toDto).collect(Collectors.toList());
+        
+
+    }
+    
 
     public List<Street> getStreetFilter(String name) {
 
@@ -274,9 +325,9 @@ public class LocationBean {
 
     }
 
-    public List<Street> getStreetFilter(String name, String city_code, String city_name, String country_code) {
+    public List<Street> getStreetFilter(String name, String cityCode, String cityName, String countryCode) {
 
-        QueryParameters queryParameters = QueryParameters.query("name=" + name + "&city_code=" + city_code + "&city_name=" + city_name + "&country_code=" + country_code ).defaultOffset(0)
+        QueryParameters queryParameters = QueryParameters.query("name=" + name + "&cityCode=" + cityCode + "&cityName=" + cityName + "&countryCode=" + countryCode ).defaultOffset(0)
                 .build();
 
         return JPAUtils.queryEntities(em, StreetEntity.class, queryParameters).stream()
@@ -284,9 +335,9 @@ public class LocationBean {
 
     }
 
-    public Street getStreet(String street_name, Integer street_number, String city_code, String city_name, String country_code) {
+    public Street getStreet(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode) {
 
-        StreetEntity streetEntity = em.find(StreetEntity.class, new StreetEntity.StreetId(street_name, street_number, city_code, city_name, country_code));
+        StreetEntity streetEntity = em.find(StreetEntity.class, new StreetEntity.StreetId(streetName, streetNumber, cityCode, cityName, countryCode));
 
         if (streetEntity == null) {
             throw new NotFoundException();
@@ -317,9 +368,9 @@ public class LocationBean {
         return StreetConverter.toDto(streetEntity);
     }
 
-    public Street putStreet(String street_name, Integer street_number, String city_code, String city_name, String country_code, Street street) {
+    public Street putStreet(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode, Street street) {
 
-        StreetEntity c = em.find(StreetEntity.class, new StreetEntity.StreetId(street_name, street_number, city_code, city_name, country_code));
+        StreetEntity c = em.find(StreetEntity.class, new StreetEntity.StreetId(streetName, streetNumber, cityCode, cityName, countryCode));
 
         if (c == null) {
             return null;
@@ -341,9 +392,9 @@ public class LocationBean {
         return StreetConverter.toDto(updatedStreetEntity);
     }
 
-    public boolean deleteStreet(String street_name, Integer street_number, String city_code, String city_name, String country_code) {
+    public boolean deleteStreet(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode) {
 
-        StreetEntity street = em.find(StreetEntity.class, new StreetEntity.StreetId(street_name, street_number, city_code, city_name, country_code));
+        StreetEntity street = em.find(StreetEntity.class, new StreetEntity.StreetId(streetName, streetNumber, cityCode, cityName, countryCode));
 
         if (street != null) {
             try {

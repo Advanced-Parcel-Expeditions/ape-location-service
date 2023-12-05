@@ -20,6 +20,8 @@ public class CityConverter {
         dto.setCode(entity.getCode());
         dto.setName(entity.getName());
         dto.setCountry(CountryConverter.toDto(entity.getCountry()));
+        dto.setLatitude(entity.getLatitude());
+        dto.setLongitude(entity.getLongitude());
 
         return dto;
 
@@ -37,6 +39,8 @@ public class CityConverter {
         entity.setCode(dto.getCode());
         entity.setName(dto.getName());
         entity.setCountry(CountryConverter.toEntity(dto.getCountry()));
+        entity.setLatitude(dto.getLatitude());
+        entity.setLongitude(dto.getLongitude());
 
         return entity;
 

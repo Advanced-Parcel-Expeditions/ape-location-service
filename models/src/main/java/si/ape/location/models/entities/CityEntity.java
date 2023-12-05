@@ -13,7 +13,12 @@ import java.io.Serializable;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "CityEntity.getAll",
-                        query = "SELECT c FROM CityEntity c")
+                        query = "SELECT c FROM CityEntity c"),
+                @NamedQuery(name = "CityEntity.getAllByParameters",
+                        query = "SELECT c FROM CityEntity c WHERE " +
+                                "(:code IS NULL OR c.code = :code) AND " +
+                                "(:name IS NULL OR c.name = :name) AND " +
+                                "(:country IS NULL OR c.country.code = :country)"),
         })
 @IdClass(CityEntity.CityId.class)
 public class CityEntity {
@@ -42,13 +47,13 @@ public class CityEntity {
      * The latitude of the city.
      */
     @Column(name = "latitude")
-    private Double latitude;
+    private String latitude;
 
     /**
      * The longitude of the city.
      */
     @Column(name = "longitude")
-    private Double longitude;
+    private String longitude;
 
     /**
      * The CityId class is a class that represents the composite primary key of the city table.
@@ -225,7 +230,7 @@ public class CityEntity {
      *
      * @return The latitude of the city.
      */
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
@@ -234,7 +239,7 @@ public class CityEntity {
      *
      * @param latitude The latitude of the city.
      */
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
@@ -243,7 +248,7 @@ public class CityEntity {
      *
      * @return The longitude of the city.
      */
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
@@ -252,7 +257,7 @@ public class CityEntity {
      *
      * @param longitude The longitude of the city.
      */
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 

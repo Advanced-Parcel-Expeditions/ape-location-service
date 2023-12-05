@@ -22,6 +22,16 @@ public class City {
     private Country country;
 
     /**
+     * The latitude.
+     */
+    private String latitude;
+
+    /**
+     * The longitude.
+     */
+    private String longitude;
+
+    /**
      * Gets the city code.
      *
      * @return the city code
@@ -73,6 +83,42 @@ public class City {
      */
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    /**
+     * Gets the latitude.
+     *
+     * @return the latitude
+     */
+    public String getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * Sets the latitude.
+     *
+     * @param latitude the latitude
+     */
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * Gets the longitude.
+     *
+     * @return the longitude
+     */
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * Sets the longitude.
+     *
+     * @param longitude the longitude
+     */
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
 }

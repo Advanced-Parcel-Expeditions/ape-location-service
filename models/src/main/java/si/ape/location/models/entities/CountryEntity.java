@@ -11,7 +11,11 @@ import javax.persistence.*;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "CountryEntity.getAll",
-                        query = "SELECT c FROM CountryEntity c")
+                        query = "SELECT c FROM CountryEntity c"),
+                @NamedQuery(name = "CountryEntity.getAllByParameters",
+                        query = "SELECT c FROM CountryEntity c WHERE " +
+                                "(:code IS NULL OR c.code = :code) AND " +
+                                "(:name IS NULL OR c.name = :name)")
         })
 public class CountryEntity {
 
