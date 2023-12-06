@@ -12,6 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import si.ape.location.lib.City;
 import si.ape.location.lib.Country;
 import si.ape.location.lib.Street;
+import si.ape.location.models.entities.CountryEntity;
 import si.ape.location.services.beans.LocationBean;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.stream.Location;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -121,6 +123,15 @@ public class LocationResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        if ((street.getCity().getCode() == null || street.getCity().getName() == null || street.getCity().getCountry() == null)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        // The country code is in the ISO 3166-1 alpha-3 format.
+        if (street.getCity().getCountry().getCode() == null || street.getCity().getCountry().getCode().length() != 3) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         street = locationBean.createStreet(street);
         return Response.status(Response.Status.OK).entity(street).build();
     }
@@ -143,6 +154,11 @@ public class LocationResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        // The country code is in the ISO 3166-1 alpha-3 format.
+        if (city.getCountry().getCode() == null || city.getCountry().getCode().length() != 3) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         city = locationBean.createCity(city);
         return Response.status(Response.Status.OK).entity(city).build();
     }
@@ -162,6 +178,11 @@ public class LocationResource {
             schema = @Schema(implementation = Country.class))) Country country) {
 
         if ((country.getCode() == null || country.getName() == null)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        // The country code is in the ISO 3166-1 alpha-3 format.
+        if (country.getCode().length() != 3) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -286,7 +307,7 @@ public class LocationResource {
                                               schema = @Schema(implementation = Street.class)))
                                               Street street){
 
-        boolean deleted = locationBean.deleteStreet(
+        LocationBean.DeleteResult deleteResult = locationBean.deleteStreet(
                 street.getStreetName(),
                 street.getStreetNumber(),
                 street.getCity().getCode(),
@@ -294,8 +315,12 @@ public class LocationResource {
                 street.getCity().getCountry().getCode()
         );
 
-        if (!deleted) {
+        if (deleteResult == LocationBean.DeleteResult.NOT_FOUND) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if (deleteResult == LocationBean.DeleteResult.FOREIGN_KEY_VIOLATION) {
+            return Response.status(Response.Status.CONFLICT).build();
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();
@@ -318,14 +343,18 @@ public class LocationResource {
                                               schema = @Schema(implementation = City.class)))
                                               City city){
 
-        boolean deleted = locationBean.deleteCity(
+        LocationBean.DeleteResult deleteResult = locationBean.deleteCity(
                 city.getCode(),
                 city.getName(),
                 city.getCountry().getCode()
         );
 
-        if (!deleted) {
+        if (deleteResult == LocationBean.DeleteResult.NOT_FOUND) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if (deleteResult == LocationBean.DeleteResult.FOREIGN_KEY_VIOLATION) {
+            return Response.status(Response.Status.CONFLICT).build();
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();
@@ -348,12 +377,16 @@ public class LocationResource {
                                               schema = @Schema(implementation = Country.class)))
                                               Country country){
 
-        boolean deleted = locationBean.deleteCountry(
+        LocationBean.DeleteResult deleteResult = locationBean.deleteCountry(
                 country.getCode()
         );
 
-        if (!deleted) {
+        if (deleteResult == LocationBean.DeleteResult.NOT_FOUND) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if (deleteResult == LocationBean.DeleteResult.FOREIGN_KEY_VIOLATION) {
+            return Response.status(Response.Status.CONFLICT).build();
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();

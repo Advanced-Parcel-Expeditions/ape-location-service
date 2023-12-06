@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud;
+import org.eclipse.persistence.exceptions.DatabaseException;
 import si.ape.location.lib.Country;
 import si.ape.location.models.converters.CountryConverter;
 import si.ape.location.models.entities.CountryEntity;
@@ -36,6 +38,12 @@ public class LocationBean {
 
     @Inject
     private EntityManager em;
+
+    public enum DeleteResult {
+        OK,
+        NOT_FOUND,
+        FOREIGN_KEY_VIOLATION
+    }
 
     public List<Country> getCountry() {
 
@@ -138,23 +146,33 @@ public class LocationBean {
         return CountryConverter.toDto(updatedCountryEntity);
     }
 
-    public boolean deleteCountry(String code) {
+    public DeleteResult deleteCountry(String code) {
 
         CountryEntity country = em.find(CountryEntity.class, code);
+
+        List<City> linkedCities = this.getCityByParameters(null, null, code, 0, 0);
+
+        if (!linkedCities.isEmpty()) {
+            return DeleteResult.FOREIGN_KEY_VIOLATION;
+        }
 
         if (country != null) {
             try {
                 beginTx();
                 em.remove(country);
                 commitTx();
+            } catch (DatabaseException e) {
+                rollbackTx();
+                return DeleteResult.FOREIGN_KEY_VIOLATION;
             } catch (Exception e) {
                 rollbackTx();
+                return DeleteResult.FOREIGN_KEY_VIOLATION;
             }
         } else {
-            return false;
+            return DeleteResult.NOT_FOUND;
         }
 
-        return true;
+        return DeleteResult.OK;
     }
 
     public List<City> getCity() {
@@ -262,9 +280,15 @@ public class LocationBean {
         return CityConverter.toDto(updatedCityEntity);
     }
 
-    public boolean deleteCity(String code, String name, String countryCode) {
+    public DeleteResult deleteCity(String code, String name, String countryCode) {
 
         CityEntity city = em.find(CityEntity.class, new CityEntity.CityId(code, name, countryCode));
+
+        List<Street> linkedStreets = this.getStreetByParameters(null, null, code, name, countryCode, 0, 0);
+
+        if (!linkedStreets.isEmpty()) {
+            return DeleteResult.FOREIGN_KEY_VIOLATION;
+        }
 
         if (city != null) {
             try {
@@ -273,12 +297,13 @@ public class LocationBean {
                 commitTx();
             } catch (Exception e) {
                 rollbackTx();
+                return DeleteResult.FOREIGN_KEY_VIOLATION;
             }
         } else {
-            return false;
+            return DeleteResult.NOT_FOUND;
         }
 
-        return true;
+        return DeleteResult.OK;
     }
 
     public List<Street> getStreet(int page, int size) {
@@ -307,8 +332,10 @@ public class LocationBean {
         query.setParameter("cityName", cityName);
         query.setParameter("countryCode", countryCode);
 
-        query.setFirstResult(page * size);
-        query.setMaxResults(size);
+        if (page != 0 && size != 0) {
+            query.setFirstResult(page * size);
+            query.setMaxResults(size);
+        }
 
         List<StreetEntity> resultList = query.getResultList();
 
@@ -395,7 +422,7 @@ public class LocationBean {
         return StreetConverter.toDto(updatedStreetEntity);
     }
 
-    public boolean deleteStreet(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode) {
+    public DeleteResult deleteStreet(String streetName, Integer streetNumber, String cityCode, String cityName, String countryCode) {
 
         StreetEntity street = em.find(StreetEntity.class, new StreetEntity.StreetId(streetName, streetNumber, cityCode, cityName, countryCode));
 
@@ -406,12 +433,13 @@ public class LocationBean {
                 commitTx();
             } catch (Exception e) {
                 rollbackTx();
+                return DeleteResult.FOREIGN_KEY_VIOLATION;
             }
         } else {
-            return false;
+            return DeleteResult.NOT_FOUND;
         }
 
-        return true;
+        return DeleteResult.OK;
     }
 
     private void beginTx() {
