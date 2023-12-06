@@ -178,7 +178,7 @@ public class LocationBean {
 
     }
 
-    public List<City> getCityByParameters(String code, String name, String countryCode) {
+    public List<City> getCityByParameters(String code, String name, String countryCode, Integer page, Integer size) {
 
         TypedQuery<CityEntity> query = em.createNamedQuery(
                 "CityEntity.getAllByParameters", CityEntity.class);
@@ -186,6 +186,9 @@ public class LocationBean {
         query.setParameter("code", code);
         query.setParameter("name", name);
         query.setParameter("country", countryCode);
+
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
 
         List<CityEntity> resultList = query.getResultList();
 

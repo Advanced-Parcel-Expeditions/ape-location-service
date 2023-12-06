@@ -76,9 +76,15 @@ public class LocationResource {
     @Path("/cities")
     public Response getCitiesByParameters(@QueryParam("cityCode") String cityCode,
                                           @QueryParam("cityName") String cityName,
-                                          @QueryParam("countryCode") String countryCode) {
+                                          @QueryParam("countryCode") String countryCode,
+                                          @QueryParam("page") @DefaultValue("1") Integer page,
+                                          @QueryParam("size") @DefaultValue("50") Integer size) {
 
-        List<City> cities = locationBean.getCityByParameters(cityCode, cityName, countryCode);
+        if (size > 150) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        List<City> cities = locationBean.getCityByParameters(cityCode, cityName, countryCode, page, size);
         return Response.status(Response.Status.OK).entity(cities).build();
     }
 
