@@ -150,7 +150,7 @@ public class LocationBean {
 
         CountryEntity country = em.find(CountryEntity.class, code);
 
-        List<City> linkedCities = this.getCityByParameters(null, null, code);
+        List<City> linkedCities = this.getCityByParameters(null, null, code, 0, 0);
 
         if (!linkedCities.isEmpty()) {
             return DeleteResult.FOREIGN_KEY_VIOLATION;
