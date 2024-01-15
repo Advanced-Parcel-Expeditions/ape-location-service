@@ -67,6 +67,27 @@ public class LocationResource {
         return Response.status(Response.Status.OK).entity(streets).build();
     }
 
+    @Operation(description = "Get all streets by parameters.", summary = "Get all streets by parameters")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "List of locations",
+                    content = @Content(schema = @Schema(implementation = Street.class, type = SchemaType.ARRAY)),
+                    headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
+            )})
+    @GET
+    @Path("/street-search/{searchString}")
+    public Response getStreetsBySearchString(@PathParam("searchString") String searchString,
+                                             @QueryParam("page") @DefaultValue("0") Integer page,
+                                             @QueryParam("size") @DefaultValue("50") Integer size) {
+
+        if (size > 150) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        List<Street> streets = locationBean.getStreetBySearchString(searchString, page, size);
+        return Response.status(Response.Status.OK).entity(streets).build();
+    }
+
     @Operation(description = "Get cities by parameters.", summary = "Get cities by parameters")
     @APIResponses({
             @APIResponse(responseCode = "200",

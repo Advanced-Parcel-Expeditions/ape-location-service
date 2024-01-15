@@ -340,7 +340,24 @@ public class LocationBean {
         List<StreetEntity> resultList = query.getResultList();
 
         return resultList.stream().map(StreetConverter::toDto).collect(Collectors.toList());
-        
+
+    }
+
+    public List<Street> getStreetBySearchString(String searchString, int page, int size) {
+
+        System.out.println("Search string: " + searchString);
+
+        TypedQuery<StreetEntity> query = em.createNamedQuery(
+                "StreetEntity.getAllBySearchString", StreetEntity.class);
+
+        query.setParameter("searchString", "%" + searchString + "%");
+
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
+
+        List<StreetEntity> resultList = query.getResultList();
+
+        return resultList.stream().map(StreetConverter::toDto).collect(Collectors.toList());
 
     }
     

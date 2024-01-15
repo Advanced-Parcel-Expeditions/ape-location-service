@@ -21,6 +21,12 @@ import java.io.Serializable;
                                 "(:cityCode IS NULL OR s.city.code = :cityCode) AND " +
                                 "(:cityName IS NULL OR s.city.name = :cityName) AND " +
                                 "(:countryCode IS NULL OR s.city.country.code = :countryCode)"),
+                @NamedQuery(name = "StreetEntity.getAllBySearchString",
+                        query = "SELECT s FROM StreetEntity s WHERE " +
+                                "(:searchString IS NULL OR LOWER(s.streetName) LIKE LOWER(:searchString) OR LOWER(s.city.name) LIKE LOWER(:searchString)) OR " +
+                                "LOWER(s.city.country.name) LIKE LOWER(:searchString) OR " +
+                                "LOWER(s.city.country.code) LIKE LOWER(:searchString) OR " +
+                                "LOWER(s.city.code) LIKE LOWER(:searchString)")
         })
 @IdClass(StreetEntity.StreetId.class)
 public class StreetEntity {
