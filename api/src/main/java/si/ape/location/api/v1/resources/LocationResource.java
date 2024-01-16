@@ -15,6 +15,9 @@ import si.ape.location.lib.Street;
 import si.ape.location.models.entities.CountryEntity;
 import si.ape.location.services.beans.LocationBean;
 
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -33,6 +36,8 @@ import java.util.logging.Logger;
 @Path("/locations")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@DeclareRoles({"Administrator", "Warehouse manager", "Warehouse agent", "Delivery driver", "International driver",
+        "Logistics agent", "Order confirmation specialist", "Customer"})
 public class LocationResource {
 
     private Logger log = Logger.getLogger(LocationResource.class.getName());
@@ -51,6 +56,7 @@ public class LocationResource {
                     headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
             )})
     @GET
+    @PermitAll
     public Response getStreetsByParameters(@QueryParam("streetName") String streetName,
                                            @QueryParam("streetNumber") Integer streetNumber,
                                            @QueryParam("cityCode") String cityCode,
@@ -76,6 +82,7 @@ public class LocationResource {
             )})
     @GET
     @Path("/street-search/{searchString}")
+    @PermitAll
     public Response getStreetsBySearchString(@PathParam("searchString") String searchString,
                                              @QueryParam("page") @DefaultValue("0") Integer page,
                                              @QueryParam("size") @DefaultValue("50") Integer size) {
@@ -97,6 +104,7 @@ public class LocationResource {
             )})
     @GET
     @Path("/cities")
+    @PermitAll
     public Response getCitiesByParameters(@QueryParam("cityCode") String cityCode,
                                           @QueryParam("cityName") String cityName,
                                           @QueryParam("countryCode") String countryCode,
@@ -120,6 +128,7 @@ public class LocationResource {
             )})
     @GET
     @Path("/countries")
+    @PermitAll
     public Response getCountriesByParameters(@QueryParam("countryCode") String countryCode,
                                               @QueryParam("countryName") String countryName) {
 
@@ -135,6 +144,7 @@ public class LocationResource {
             @APIResponse(responseCode = "405", description = "Validation error .")
     })
     @POST
+    @RolesAllowed({"Administrator"})
     public Response createStreet(@RequestBody(
             description = "DTO object with street.",
             required = true, content = @Content(
@@ -166,6 +176,7 @@ public class LocationResource {
     })
     @POST
     @Path("/cities")
+    @RolesAllowed({"Administrator"})
     public Response createCity(@RequestBody(
             description = "DTO object with city.",
             required = true, content = @Content(
@@ -193,6 +204,7 @@ public class LocationResource {
     })
     @POST
     @Path("/countries")
+    @RolesAllowed({"Administrator"})
     public Response createCountry(@RequestBody(
             description = "DTO object with country.",
             required = true, content = @Content(
@@ -223,6 +235,7 @@ public class LocationResource {
             @APIResponse(responseCode = "405", description = "Validation error.")
     })
     @PUT
+    @RolesAllowed({"Administrator"})
     public Response putStreet(@Parameter(description = "Street id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with street.",
@@ -259,6 +272,7 @@ public class LocationResource {
     })
     @PUT
     @Path("/cities")
+    @RolesAllowed({"Administrator"})
     public Response putCity(@Parameter(description = "City id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with city.",
@@ -293,6 +307,7 @@ public class LocationResource {
     })
     @PUT
     @Path("/countries")
+    @RolesAllowed({"Administrator"})
     public Response putCountry(@Parameter(description = "Country id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with country.",
@@ -321,6 +336,7 @@ public class LocationResource {
             @APIResponse(responseCode = "404", description = "Street not found.")
     })
     @DELETE
+    @RolesAllowed({"Administrator"})
     public Response deleteStreet(@Parameter(description = "Street id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with street.",
@@ -357,6 +373,7 @@ public class LocationResource {
     })
     @DELETE
     @Path("/cities")
+    @RolesAllowed({"Administrator"})
     public Response deleteCity(@Parameter(description = "City id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with city.",
@@ -391,6 +408,7 @@ public class LocationResource {
     })
     @DELETE
     @Path("/countries")
+    @RolesAllowed({"Administrator"})
     public Response deleteCountry(@Parameter(description = "Country id.", required = true)
                                       @RequestBody(
                                               description = "DTO object with country.",
