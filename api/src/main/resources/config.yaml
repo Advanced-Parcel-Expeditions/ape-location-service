@@ -12,4 +12,4 @@ kumuluzee:
   jwt-auth:
     public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqSVQlP0ioS+SLD8+c3FGnd4BZqPmQRTgrXONCD3OfrQRLab4LeR97uY7YI8+8j7LsklF/MRKlAeIfPEJzZgy6WfFFAiKb1xM+p23wXwa5Y0XWVk8HkbH2wkd7P2UABV0ucjz/vksVKV8GjJIjzEcxeI/GruVmqnN9aHKuQrQBkslCM0bTrfmAwDcEYjfRzcDgboBNEJZYcu4U/1o2wV79mqpP8ViDBPIN476vhe2t4HmTdfRpejodC94i+1/y5bv8C3cK/CabhLdeiQJvdPc8cfOxuRlOs4u/f0UN0qr1hspoCI8ytpQnlOWxc9A8K8fGb/xQgnCL+BKQAmsIASDQQIDAQAB
     issuer: ape-authentication-service
-    enabled: true
+    enabled: false
